@@ -1,0 +1,16 @@
+{
+    "title": "context_types",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "enum": ["Fleet", "Application"]
+            },
+            "test": {
+                "type": "string"
+            }
+        },
+        "required": ["name", "test"]
+    }
+}
