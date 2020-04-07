@@ -126,7 +126,6 @@ class MongoMigration {
                     $set: values
                 }, function(error, result) {
                     if (error) {
-                        console.log('la', error)
                         reject(error)
                     }
                     resolve('success')
@@ -137,6 +136,25 @@ class MongoMigration {
             }
         })
     }
+
+    async mongoUnset(collection, query, fields) {
+        return new Promise((resolve, reject) => {
+            try {
+                MongoDriver.constructor.db.collection(collection).updateMany(query, {
+                    $unset: fields
+                }, function(error, result) {
+                    if (error) {
+                        reject(error)
+                    }
+                    resolve('success')
+                })
+            } catch (error) {
+                console.error(error)
+                reject(error)
+            }
+        })
+    }
+
 
     async mongoDelete(collection, query) {
         return new Promise((resolve, reject) => {

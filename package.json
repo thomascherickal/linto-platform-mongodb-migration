@@ -4,7 +4,7 @@
     "description": "This is the linto-platform-admin migration service",
     "main": "index.js",
     "scripts": {
-        "start": "node index.js"
+        "migrate": "node index.js"
     },
     "author": "Romain Lopez <rlopez@lignora.com>",
     "contributors": [

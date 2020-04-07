@@ -1,5 +1,4 @@
-const MongoMigration = require(`../../model/migr0.1ation.js`)
-
+const MongoMigration = require(`../../model/migration.js`)
 const schemas = {
     context: require('./schemas/context.json'),
     context_types: require('./schemas/context_types.json'),
@@ -9,25 +8,10 @@ const schemas = {
     users: require('./schemas/users.json')
 }
 
-class Migrate001 extends MongoMigration {
+class Migrate extends MongoMigration {
     constructor() {
         super()
         this.version = '1'
-    }
-    testSchema(json, schema) {
-        const schemaValid = validator.validate(json, schema)
-        var schemaErrors = validator.getLastErrors() // this will return an array of validation errors encountered
-        if (schemaValid) {
-            return {
-                valid: schemaValid,
-                errors: null
-            }
-        } else {
-            return {
-                valid: schemaValid,
-                errors: schemaErrors
-            }
-        }
     }
     async migrateUp() {
         try {
@@ -200,6 +184,8 @@ class Migrate001 extends MongoMigration {
             if (migrationErrors.length > 0) {
                 throw migrationErrors
             } else {
+
+                await this.mongoUpdate('dbversion', { id: 'current_version' }, { version: 1 })
                 console.log(`> MongoDB migration to version "${this.version}": Success `)
                 return true
             }
@@ -220,18 +206,10 @@ class Migrate001 extends MongoMigration {
             return error
         }
     }
-    migrateDown() {
-        const versionCollections = [
-            'context',
-            'contetxt_types',
-            'flow_pattern',
-            'flow_pattern_tmp',
-            'lintos',
-            'users'
-        ]
-
-        // TODO : remove collection if not in the array
+    async migrateDown() {
+        console.log('Miration to version 1. This is the lowest version you can migrate to')
+        return true
     }
 }
 
-module.exports = new Migrate001()
+module.exports = new Migrate()

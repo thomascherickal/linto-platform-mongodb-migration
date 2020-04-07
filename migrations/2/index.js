@@ -1,7 +1,4 @@
 const MongoMigration = require(`../../model/migration.js`)
-const ZSchema = require("z-schema");
-const validator = new ZSchema({});
-
 const schemas = {
     context: require('./schemas/context.json'),
     context_types: require('./schemas/context_types.json'),
@@ -11,25 +8,10 @@ const schemas = {
     users: require('./schemas/users.json')
 }
 
-class Migrate001 extends MongoMigration {
+class Migrate extends MongoMigration {
     constructor() {
         super()
         this.version = '2'
-    }
-    testSchema(json, schema) {
-        const schemaValid = validator.validate(json, schema)
-        var schemaErrors = validator.getLastErrors() // this will return an array of validation errors encountered
-        if (schemaValid) {
-            return {
-                valid: schemaValid,
-                errors: null
-            }
-        } else {
-            return {
-                valid: schemaValid,
-                errors: schemaErrors
-            }
-        }
     }
     async migrateUp() {
         try {
@@ -39,10 +21,10 @@ class Migrate001 extends MongoMigration {
             collections.map(col => {
                 collectionNames.push(col.name)
             })
-            console.log(collectionNames)
-                /*****************/
-                /* CONTEXT_TYPES */
-                /*****************/
+
+            /*****************/
+            /* CONTEXT_TYPES */
+            /*****************/
             if (collectionNames.indexOf('context_types') >= 0) { // collection exist
                 const contextTypes = await this.mongoRequest('context_types', {})
                 if (contextTypes.length > 0) { // collection exist and not empty
@@ -59,11 +41,9 @@ class Migrate001 extends MongoMigration {
                         }
 
                     } else { // schema is invalid
-                        console.log('SCHEMA IBALID')
                         await this.mongoUpdateMany('context_types', {}, { test: 'test' })
                         const contextTypes = await this.mongoRequest('context_types', {})
                         const schemaValid = this.testSchema(contextTypes, schemas.context_types)
-                        console.log('post modif', schemaValid)
                         if (!schemaValid.valid) {
                             migrationErrors.push({
                                 collectionName: 'context_types',
@@ -86,10 +66,13 @@ class Migrate001 extends MongoMigration {
                 this.mongoInsertMany('context_types', payload)
             }
 
+
+
             // RETURN
             if (migrationErrors.length > 0) {
                 throw migrationErrors
             } else {
+                await this.mongoUpdate('dbversion', { id: 'current_version' }, { version: 2 })
                 console.log(`> MongoDB migration to version "${this.version}": Success `)
                 return true
             }
@@ -111,18 +94,49 @@ class Migrate001 extends MongoMigration {
             return error
         }
     }
-    migrateDown() {
-        const versionCollections = [
-            'context',
-            'contetxt_types',
-            'flow_pattern',
-            'flow_pattern_tmp',
-            'lintos',
-            'users'
-        ]
+    async migrateDown() {
+        try {
+            const collections = await this.listCollections()
+            const collectionNames = []
+            let migrationErrors = []
+            collections.map(col => {
+                collectionNames.push(col.name)
+            })
 
-        // TODO : remove collection if not in the array
+            /*****************/
+            /* CONTEXT_TYPES */
+            /*****************/
+            if (collectionNames.indexOf('context_types') >= 0) { // collection exist
+                const contextTypes = await this.mongoRequest('context_types', {})
+                if (contextTypes.length > 0) { // collection exist and not empty
+                    await this.mongoUnset('context_types', {}, { test: '' })
+                }
+
+                // RETURN
+                if (migrationErrors.length > 0) {
+                    throw migrationErrors
+                } else {
+                    console.log(`> MongoDB migration to version "${this.version}": Success `)
+                    return true
+                }
+            }
+        } catch (error) {
+            console.error(error)
+            if (typeof(error) === 'object') {
+                console.error('======== Migration ERROR ========')
+                error.map(err => {
+                    if (!!err.collectionName && !!err.errors) {
+                        console.error('> Collection: ', err.collectionName)
+                        err.errors.map(e => {
+                            console.error('Error: ', e)
+                        })
+                    }
+                })
+                console.error('=================================')
+            }
+            return error
+        }
     }
 }
 
-module.exports = new Migrate001()
+module.exports = new Migrate()

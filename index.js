@@ -4,35 +4,43 @@ const migration = require(`./migrations/${process.env.LINTO_STACK_MONGODB_TARGET
 const path = './migrations/';
 const fs = require('fs');
 
-function migrateUp() {
+function migrate() {
     return new Promise((resolve, reject) => {
         try {
             setTimeout(async() => {
                 // Check if MongoDriver is connected
                 if (!MongoDriver.constructor.checkConnection()) {
                     console.log('MongoDb migrate : Not connected')
-                    migrateUp()
+                    migrate()
                 } else {
                     const currentVersion = await migration.getCurrentVersion()
-                    if (currentVersion > process.env.LINTO_STACK_MONGODB_TARGET_VERSION) {
-                        // DOWN
+                    const versions = parseFolders()
+                    const indexStart = versions.indexOf(currentVersion.toString())
+                    const indexEnd = versions.indexOf(process.env.LINTO_STACK_MONGODB_TARGET_VERSION.toString())
 
-                    } else if (currentVersion < process.env.LINTO_STACK_MONGODB_TARGET_VERSION) {
+                    if (currentVersion > process.env.LINTO_STACK_MONGODB_TARGET_VERSION) { // MIGRATE DOWN
+                        try {
+                            console.log('MIGRATE DOWN')
+                            for (let iteration of generatorMigrateDown(versions, indexStart, indexEnd)) {
+                                const res = await iteration
+                                if (res !== true) {
+                                    reject(res)
+                                }
+                            }
+                        } catch (error) {
+                            reject(error)
+                        }
+                    } else if (currentVersion < process.env.LINTO_STACK_MONGODB_TARGET_VERSION) { // MIGRATE UP
                         console.log('MIGRATE UP')
-                            // UP
-                        let versions = parseFolders()
-                        const indexStart = versions.indexOf(currentVersion)
-                        const indexEnd = versions.indexOf(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)
                         try {
                             for (let iteration of generatorMigrateUp(versions, indexStart, indexEnd)) {
                                 const res = await iteration
                                 if (res !== true) {
-                                    throw res
+                                    reject(res)
                                 }
                             }
                         } catch (error) {
-                            console.error('catch 2 ', error)
-                            return error
+                            reject(error)
                         }
                     }
                 }
@@ -45,7 +53,6 @@ function migrateUp() {
 
 // Generator function to chain promises
 function* generatorMigrateUp(versions, indexStart, indexEnd) {
-    console.log('allo')
     for (let i = indexStart + 1; i <= indexEnd; i++) {
         yield(new Promise(async(resolve, reject) => {
             try {
@@ -53,15 +60,53 @@ function* generatorMigrateUp(versions, indexStart, indexEnd) {
                 const migrationFile = require(`./migrations/${versions[i]}/index.js`)
                 const mig = await migrationFile.migrateUp()
                 if (mig === true) {
-                    return mig
+                    resolve(mig)
                 } else {
-                    throw mig
+                    reject(mig)
                 }
             } catch (err) {
                 console.error(err)
+                reject(err)
             }
         }))
     }
+}
+
+function* generatorMigrateDown(versions, indexStart, indexEnd) {
+    // Execute migrate down for each version that are higher than the wanted one
+    for (let i = indexStart; i > indexEnd; i--) {
+        yield(new Promise(async(resolve, reject) => {
+            try {
+                console.log('> Migrate down to version :', versions[i])
+                const migrationFile = require(`./migrations/${versions[i]}/index.js`)
+                const mig = await migrationFile.migrateDown()
+                if (mig === true) {
+                    resolve(mig)
+                } else {
+                    reject(mig)
+                }
+            } catch (err) {
+                console.error(err)
+                reject(err)
+            }
+        }))
+    }
+    // Execute migrate up for the wanted version.
+    const wantedVersion = require(`./migrations/${versions[indexEnd]}/index.js`)
+    yield(new Promise(async(resolve, reject) => {
+        try {
+            console.log('> Migrate down to version :', versions[indexEnd])
+            let migup = await wantedVersion.migrateUp()
+            if (migup === true) {
+                resolve(migup)
+            } else {
+                reject(migup)
+            }
+        } catch (error) {
+            console.error(err)
+            reject(err)
+        }
+    }))
 }
 
 function parseFolders() {
@@ -74,4 +119,5 @@ function parseFolders() {
     }
 }
 
-migrateUp()
+
+migrate()
