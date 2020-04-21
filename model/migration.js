@@ -7,7 +7,7 @@ class MongoMigration {
     async getCurrentVersion() {
         try {
             const getVersion = await this.mongoRequest('dbversion', {})
-            return getVersion[0].version
+            return getVersion
         } catch (error) {
             console.error(error)
             return error

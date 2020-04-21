@@ -1,7 +1,7 @@
 {
     "name": "mongodb-migration",
     "version": "1.0.0",
-    "description": "This is the linto-platform-admin migration service",
+    "description": "linto-platform-admin migration service",
     "main": "index.js",
     "scripts": {
         "migrate": "node index.js"

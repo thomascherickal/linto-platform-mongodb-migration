@@ -13,41 +13,51 @@ function migrate() {
                     console.log('MongoDb migrate : Not connected')
                     migrate()
                 } else {
-                    const currentVersion = await migration.getCurrentVersion()
-                    const versions = parseFolders()
-                    const indexStart = versions.indexOf(currentVersion.toString())
-                    const indexEnd = versions.indexOf(process.env.LINTO_STACK_MONGODB_TARGET_VERSION.toString())
+                    const getCurrentVersion = await migration.getCurrentVersion()
+                    if (getCurrentVersion.length > 0 && !!getCurrentVersion[0].version) {
+                        const currentVersion = getCurrentVersion[0].version
+                        const versions = parseFolders()
+                        const indexStart = versions.indexOf(currentVersion.toString())
+                        const indexEnd = versions.indexOf(process.env.LINTO_STACK_MONGODB_TARGET_VERSION.toString())
 
-                    if (parseInt(currentVersion) > parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) { // MIGRATE DOWN
-                        try {
-                            console.log('MIGRATE DOWN')
-                            for (let iteration of generatorMigrateDown(versions, indexStart, indexEnd)) {
-                                const res = await iteration
-                                if (res !== true) {
-                                    reject(res)
+                        if (parseInt(currentVersion) > parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) { // MIGRATE DOWN
+                            try {
+                                console.log('> MIGRATE DOWN')
+                                for (let iteration of generatorMigrateDown(versions, indexStart, indexEnd)) {
+                                    const res = await iteration
+                                    if (res !== true) {
+                                        reject(res)
+                                    }
                                 }
+                            } catch (error) {
+                                reject(error)
                             }
-                        } catch (error) {
-                            reject(error)
+                        } else if (parseInt(currentVersion) <= parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) { // MIGRATE UP
+                            try {
+                                if (parseInt(currentVersion) < parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) {
+                                    console.log('> MIGRATE UP')
+                                } else if (parseInt(currentVersion) === parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) {
+                                    console.log('> MIGRATE control current version')
+                                }
+                                for (let iteration of generatorMigrateUp(versions, indexStart, indexEnd)) {
+                                    const res = await iteration
+                                    if (res !== true) {
+                                        reject(res)
+                                    }
+                                }
+                                process.exit(0)
+                            } catch (error) {
+                                reject(error)
+                            }
                         }
-                    } else if (parseInt(currentVersion) <= parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) { // MIGRATE UP
-                        try {
-                            if (parseInt(currentVersion) < parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) {
-                                console.log('> MIGRATE UP')
-                            } else if (parseInt(currentVersion) === parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) {
-                                console.log('> MIGRATE control current version')
-                            }
-                            for (let iteration of generatorMigrateUp(versions, indexStart, indexEnd)) {
-                                const res = await iteration
-                                if (res !== true) {
-                                    reject(res)
-                                }
-                            }
-                            process.exit(0)
-                        } catch (error) {
-                            reject(error)
+                    } else { // If database version is not found, execute Version 1 mongoUP
+                        const initDb = require(`./migrations/1/index.js`)
+                        const mig = await initDb.migrateUp()
+                        if (mig === true) {
+                            migrate()
                         }
                     }
+
                 }
             }, 500)
         } catch (error) {

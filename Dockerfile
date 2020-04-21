@@ -14,4 +14,4 @@ EXPOSE 80
 # Entrypoint handles the passed arguments
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
-# CMD ["npm", "run", "start"]
+# CMD ["npm", "run", "migrate"]

@@ -197,7 +197,10 @@ class Migrate extends MongoMigration {
                     })
                 }
             } else { // collection doesn't exist
-                await this.mongoInsert('dbversion', [{ id: 'current_version' }, { version: this.version }])
+                await this.mongoInsert('dbversion', {
+                    id: 'current_version',
+                    version: this.version
+                })
             }
 
 
