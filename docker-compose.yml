@@ -1,0 +1,25 @@
+version: '3.7'
+
+services:
+  mongo-migrate:
+    image: mongodb-migration:latest
+    networks:
+      - internal
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    healthcheck:
+      interval: 15s
+      timeout: 10s
+      retries: 4
+      start_period: 50s
+    env_file: .docker_env
+    ports:
+      - 80:80
+
+networks:
+  internal:

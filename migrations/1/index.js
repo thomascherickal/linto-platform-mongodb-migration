@@ -2,6 +2,7 @@ const MongoMigration = require(`../../model/migration.js`)
 const schemas = {
     context: require('./schemas/context.json'),
     context_types: require('./schemas/context_types.json'),
+    dbversion: require('./schemas/dbversion.json'),
     flow_pattern: require('./schemas/flow_pattern.json'),
     flow_pattern_tmp: require('./schemas/flow_pattern_tmp.json'),
     lintos: require('./schemas/lintos.json'),
@@ -11,7 +12,7 @@ const schemas = {
 class Migrate extends MongoMigration {
     constructor() {
         super()
-        this.version = '1'
+        this.version = 1
     }
     async migrateUp() {
         try {
@@ -57,7 +58,7 @@ class Migrate extends MongoMigration {
                     { name: 'Fleet' },
                     { name: 'Application' }
                 ]
-                this.mongoInsertMany('context_types', payload)
+                await this.mongoInsertMany('context_types', payload)
             }
 
 
@@ -180,11 +181,30 @@ class Migrate extends MongoMigration {
                 }
             }
 
+            /*************/
+            /* DBVERSION */
+            /*************/
+            if (collectionNames.indexOf('dbversion') >= 0) { // collection exist
+                const dbversion = await this.mongoRequest('dbversion', {})
+
+                const schemaValid = this.testSchema(dbversion, schemas.dbversion)
+                if (schemaValid.valid) { // schema valid
+                    await this.mongoUpdate('dbversion', { id: 'current_version' }, { version: this.version })
+                } else { // schema is invalid
+                    migrationErrors.push({
+                        collectionName: 'dbversion',
+                        errors: schemaValid.errors
+                    })
+                }
+            } else { // collection doesn't exist
+                await this.mongoInsert('dbversion', [{ id: 'current_version' }, { version: this.version }])
+            }
+
+
             // RETURN
             if (migrationErrors.length > 0) {
                 throw migrationErrors
             } else {
-
                 await this.mongoUpdate('dbversion', { id: 'current_version' }, { version: 1 })
                 console.log(`> MongoDB migration to version "${this.version}": Success `)
                 return true

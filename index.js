@@ -18,7 +18,7 @@ function migrate() {
                     const indexStart = versions.indexOf(currentVersion.toString())
                     const indexEnd = versions.indexOf(process.env.LINTO_STACK_MONGODB_TARGET_VERSION.toString())
 
-                    if (currentVersion > process.env.LINTO_STACK_MONGODB_TARGET_VERSION) { // MIGRATE DOWN
+                    if (parseInt(currentVersion) > parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) { // MIGRATE DOWN
                         try {
                             console.log('MIGRATE DOWN')
                             for (let iteration of generatorMigrateDown(versions, indexStart, indexEnd)) {
@@ -30,15 +30,20 @@ function migrate() {
                         } catch (error) {
                             reject(error)
                         }
-                    } else if (currentVersion < process.env.LINTO_STACK_MONGODB_TARGET_VERSION) { // MIGRATE UP
-                        console.log('MIGRATE UP')
+                    } else if (parseInt(currentVersion) <= parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) { // MIGRATE UP
                         try {
+                            if (parseInt(currentVersion) < parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) {
+                                console.log('> MIGRATE UP')
+                            } else if (parseInt(currentVersion) === parseInt(process.env.LINTO_STACK_MONGODB_TARGET_VERSION)) {
+                                console.log('> MIGRATE control current version')
+                            }
                             for (let iteration of generatorMigrateUp(versions, indexStart, indexEnd)) {
                                 const res = await iteration
                                 if (res !== true) {
                                     reject(res)
                                 }
                             }
+                            process.exit(0)
                         } catch (error) {
                             reject(error)
                         }
@@ -47,13 +52,14 @@ function migrate() {
             }, 500)
         } catch (error) {
             reject(error)
+            process.exit(1)
         }
     })
 }
 
 // Generator function to chain promises
 function* generatorMigrateUp(versions, indexStart, indexEnd) {
-    for (let i = indexStart + 1; i <= indexEnd; i++) {
+    for (let i = indexStart; i <= indexEnd; i++) {
         yield(new Promise(async(resolve, reject) => {
             try {
                 console.log('> Migrate up to version :', versions[i])
