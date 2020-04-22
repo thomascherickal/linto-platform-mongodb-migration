@@ -107,6 +107,33 @@ class Migrate extends MongoMigration {
                 await this.mongoInsert('flow_pattern_tmp', payload)
             }
 
+            /****************/
+            /* FLOW_PATTERN */
+            /****************/
+            const flowPatternPayload = require('./json/linto-fleet-default-flow.json')
+            if (collectionNames.indexOf('flow_pattern') >= 0) { // collection exist
+                const flowPattern = await this.mongoRequest('flow_pattern', {})
+                if (flowPattern.length > 0) { // collection exist and not empty
+                    const schemaValid = this.testSchema(flowPattern, schemas.flow_pattern)
+                    if (!schemaValid.valid) { // schema is invalid
+                        const neededVal = flowPattern.filter(ct => ct.name === 'linto-fleet-default')
+                        if (neededVal.length === 0) { // required value doesn't exist
+                            await this.mongoInsert('flow_pattern_tmp', flowPatternPayload)
+                        }
+                    } else { // schema is invalid
+                        // Add errors to migrationErrors array
+                        migrationErrors.push({
+                            collectionName: 'flow_pattern',
+                            errors: schemaValid.errors
+                        })
+                    }
+                } else { //collection exist but empty
+                    await this.mongoInsert('flow_pattern_tmp', flowPatternPayload)
+                }
+            } else { // collection doesn't exist
+                await this.mongoInsert('flow_pattern', flowPatternPayload)
+            }
+
             /*********/
             /* USERS */
             /*********/
@@ -143,24 +170,7 @@ class Migrate extends MongoMigration {
                 }
             }
 
-            /****************/
-            /* FLOW_PATTERN */
-            /****************/
-            if (collectionNames.indexOf('flow_pattern') >= 0) { // collection exist
-                const flowPattern = await this.mongoRequest('flow_pattern', {})
 
-                if (flowPattern.length > 0) { // collection exist and not empty
-                    const schemaValid = this.testSchema(flowPattern, schemas.flow_pattern)
-
-                    if (!schemaValid.valid) { // schema is invalid
-                        // Add errors to migrationErrors array
-                        migrationErrors.push({
-                            collectionName: 'flow_pattern',
-                            errors: schemaValid.errors
-                        })
-                    }
-                }
-            }
 
             /**********/
             /* LINTOS */
