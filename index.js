@@ -11,7 +11,6 @@ function migrate() {
                 // Check if MongoDriver is connected
                 if (!MongoDriver.constructor.checkConnection()) {
                     console.log('MongoDb migrate : Not connected')
-                    migrate()
                 } else {
                     const getCurrentVersion = await migration.getCurrentVersion()
                     if (getCurrentVersion.length > 0 && !!getCurrentVersion[0].version) {

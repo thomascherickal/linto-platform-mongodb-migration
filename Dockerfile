@@ -1,7 +1,6 @@
 FROM node:latest
 # Gettext for envsubst being called form entrypoint script
-RUN apt-get update -y && \
-    apt-get install gettext -y
+RUN apt-get update -y 
 
 COPY . /usr/src/app/linto-platform-mongodb-migration
 COPY ./docker-entrypoint.sh /
