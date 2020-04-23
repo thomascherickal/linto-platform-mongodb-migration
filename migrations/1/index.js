@@ -115,10 +115,10 @@ class Migrate extends MongoMigration {
                 const flowPattern = await this.mongoRequest('flow_pattern', {})
                 if (flowPattern.length > 0) { // collection exist and not empty
                     const schemaValid = this.testSchema(flowPattern, schemas.flow_pattern)
-                    if (!schemaValid.valid) { // schema is invalid
+                    if (schemaValid.valid) { // schema is invalid
                         const neededVal = flowPattern.filter(ct => ct.name === 'linto-fleet-default')
                         if (neededVal.length === 0) { // required value doesn't exist
-                            await this.mongoInsert('flow_pattern_tmp', flowPatternPayload)
+                            await this.mongoInsert('flow_pattern', flowPatternPayload)
                         }
                     } else { // schema is invalid
                         // Add errors to migrationErrors array
@@ -128,7 +128,7 @@ class Migrate extends MongoMigration {
                         })
                     }
                 } else { //collection exist but empty
-                    await this.mongoInsert('flow_pattern_tmp', flowPatternPayload)
+                    await this.mongoInsert('flow_pattern', flowPatternPayload)
                 }
             } else { // collection doesn't exist
                 await this.mongoInsert('flow_pattern', flowPatternPayload)
