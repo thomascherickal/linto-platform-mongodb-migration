@@ -28,6 +28,6 @@ while [ "$1" != "" ]; do
 done
 
 echo "RUNNING : $script"
-cd /usr/src/app/linto-platform-mongodb-migartion
+cd /usr/src/app/linto-platform-mongodb-migration
 
 eval "$script"
