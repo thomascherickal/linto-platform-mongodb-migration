@@ -7,6 +7,7 @@ COPY ./docker-entrypoint.sh /
 COPY ./wait-for-it.sh /
 
 WORKDIR /usr/src/app/linto-platform-mongodb-migration
+RUN npm install
 
 EXPOSE 80
 
