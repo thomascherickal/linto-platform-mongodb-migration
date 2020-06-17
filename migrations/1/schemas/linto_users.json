@@ -1,0 +1,23 @@
+{
+    "title": "linto_users",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "userName": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string",
+                "format": "email"
+            },
+            "hash": {
+                "type": "string"
+            },
+            "salt": {
+                "type": "string"
+            }
+        },
+        "required": ["userName", "email", "pswhashdHash", "salt"]
+    }
+}
