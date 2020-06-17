@@ -47,8 +47,8 @@ function configureDefaults() {
         process.env.LINTO_STACK_MONGODB_TARGET_VERSION = ifHas(process.env.LINTO_STACK_MONGODB_TARGET_VERSION, envdefault.LINTO_STACK_MONGODB_TARGET_VERSION)
 
 
-        process.env.LINTO_USER_ANDROID_EMAIL = ifHas(process.env.LINTO_USER_ANDROID_EMAIL, envdefault.LINTO_USER_ANDROID_EMAIL)
-        process.env.LINTO_USER_ANDROID_PASWORD = ifHas(process.env.LINTO_USER_ANDROID_PASWORD, envdefault.LINTO_USER_ANDROID_PASWORD)
+        process.env.LINTO_STACK_MONGODB_USER_ANDROID_EMAIL = ifHas(process.env.LINTO_STACK_MONGODB_USER_ANDROID_EMAIL, envdefault.LINTO_STACK_MONGODB_USER_ANDROID_EMAIL)
+        process.env.LINTO_STACK_MONGODB_USER_ANDROID_PASWORD = ifHas(process.env.LINTO_STACK_MONGODB_USER_ANDROID_PASWORD, envdefault.LINTO_STACK_MONGODB_USER_ANDROID_PASWORD)
     } catch (e) {
         console.error(debug.namespace, e)
         process.exit(1)
