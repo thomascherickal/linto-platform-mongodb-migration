@@ -1,24 +1,39 @@
-# Development local
-Has a test purpose for a local setup the following step are necessary 
+
+# Linto-Platform-Mongodb-Migration
+This services is a one shoot scripts that might migrate LinTO Platform databases content when needed (version bumps, rollbacks...)
+
+## Usage
+
+See documentation : [doc.linto.ai](https://doc.linto.ai)
+
+# Deploy
+
+With our proposed stack [linto-platform-stack](https://github.com/linto-ai/linto-platform-stack)
+
+# Develop
+
+## Install project
+```
+git clone https://github.com/linto-ai/linto-platform-mongodb-migration.git
+linto-platform-mongodb-migration
+npm install
+```
 
 ## Environment
-
-The environment file need to be configured based on your personal mongo configuration
 `cp .envdefault .env`
-Then you can edit the `.env` file based on you settings.
+Then update the `.env` to manage your personal configuration
 
 ## User
 
-An user root is needed to be created in mongo:
+Based on your environment settings, an user may be require to be create
 ```
 db.createUser({
-	user: "root",
-	pwd: "example",
+	user: "LINTO_STACK_MONGODB_USER",
+	pwd: "LINTO_STACK_MONGODB_PASSWORD",
 	roles: ["readWrite"]
 })
 ```
 
 ## RUN
-
-Last step is to simply run de mongodb migration : `npm run migrate`
-You should be able to see a new database based on your new settings
+Run de mongodb migration : `npm run migrate`
+A database with a set of collection will be create if it's successful.
