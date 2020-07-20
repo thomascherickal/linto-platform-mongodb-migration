@@ -1,5 +1,5 @@
 {
-    "title": "context",
+    "title": "workflows_static",
     "type": "array",
     "items": {
         "type": "object",

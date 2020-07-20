@@ -136,7 +136,7 @@ class Migrate extends MongoMigration {
             /********************/
             if (collectionNames.indexOf('workflows_static') >= 0) { // collection exist
                 const workflowsStatic = await this.mongoRequest('workflows_static', {})
-                if (clientsStatic.length > 0) { // collection exist and not empty
+                if (workflowsStatic.length > 0) { // collection exist and not empty
                     const schemaValid = this.testSchema(workflowsStatic, schemas.workflowsStatic)
 
                     if (!schemaValid.valid) { // schema is invalid
