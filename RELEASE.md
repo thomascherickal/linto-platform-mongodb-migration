@@ -1,2 +1,5 @@
-# 1.0.0
+# 0.0.2
+- Second version of linto-platform-mongodb-migration service
+
+# 0.0.1
 - First version of linto-platform-mongodb-migration service
