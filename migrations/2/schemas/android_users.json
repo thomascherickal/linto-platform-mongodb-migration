@@ -1,0 +1,37 @@
+{
+    "title": "users",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "email": {
+                "type": "string",
+                "format": "email"
+            },
+            "pswdHash": {
+                "type": "string"
+            },
+            "salt": {
+                "type": "string"
+            },
+            "applications": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "flowId": {
+                            "type": "string"
+                        },
+                        "workflowId": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "required": ["userName", "email", "pswdHash", "salt", "applications"]
+        }
+    }
+}

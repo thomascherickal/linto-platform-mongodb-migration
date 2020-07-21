@@ -1,0 +1,37 @@
+{
+    "title": "users",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "originUrl": {
+                "type": "string",
+                "format": "uri"
+            },
+            "requestToken": {
+                "type": "string"
+            },
+            "maxSlots": {
+                "type": "integer"
+            },
+            "slots": {
+                "type": "array",
+                "items": {
+                    "type": "object"
+                }
+            },
+            "applications": {
+                "format": "object",
+                "properties":  {
+                    "flowId": {
+                        "type": "string"
+                    },
+                    "workflowId": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    },
+    "required": ["originUrl", "requestToken", "slots", "applications"]
+}
