@@ -1,15 +1,11 @@
 {
-    "title": "users",
+    "title": "android_users",
     "type": "array",
     "items": {
         "type": "object",
         "properties": {
-            "name": {
-                "type": "string"
-            },
             "email": {
-                "type": "string",
-                "format": "email"
+                "type": "string"
             },
             "pswdHash": {
                 "type": "string"
@@ -18,20 +14,9 @@
                 "type": "string"
             },
             "applications": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "flowId": {
-                            "type": "string"
-                        },
-                        "workflowId": {
-                            "type": "string"
-                        }
-                    }
-                }
-            },
-            "required": ["userName", "email", "pswdHash", "salt", "applications"]
+                "type": "array"
+            }
         }
-    }
+    },
+    "required": ["email", "pswdHash", "salt", "applications"]
 }

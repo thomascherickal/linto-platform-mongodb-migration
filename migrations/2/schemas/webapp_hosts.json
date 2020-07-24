@@ -1,5 +1,5 @@
 {
-    "title": "users",
+    "title": "webapp_hosts",
     "type": "array",
     "items": {
         "type": "object",
