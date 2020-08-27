@@ -11,7 +11,7 @@
                 "type": "string"
             },
             "flow": {
-                "type": "array"
+                "type": ["array"]
             },
             "created_date": {
                 "type": "string",

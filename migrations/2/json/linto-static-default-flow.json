@@ -1,6 +1,6 @@
 {
-    "name": "linto-fleet-default",
-    "type": "Fleet",
+    "name": "static-clients-default-workflow",
+    "type": "static",
     "flow": [{
             "id": "2d78a86.a300558",
             "type": "tab",
@@ -212,5 +212,5 @@
             "api": "linstt"
         }
     ],
-    "created_date": "2020-04-22T10:43:49+02:00"
+    "created_date": "2020-07-30T10:43:49+02:00"
 }

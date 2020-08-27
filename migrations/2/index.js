@@ -72,12 +72,16 @@ class Migrate extends MongoMigration {
             /* WORKFLOWS_TEMAPLTES */
             /***********************/
             const WorkflowsTemplatesPayload = require('./json/linto-static-default-flow.json')
+            const staticTemplateValid = this.testSchema(WorkflowsTemplatesPayload, schemas.workflowsTemplates)
+
             if (collectionNames.indexOf('workflows_templates') >= 0) { // collection exist
-                const flowPattern = await this.mongoRequest('workflows_templates', {})
-                if (flowPattern.length > 0) { // collection exist and not empty
-                    const schemaValid = this.testSchema(flowPattern, schemas.workflowsTemplates)
-                    if (schemaValid.valid) { // schema is invalid
-                        const neededVal = flowPattern.filter(ct => ct.name === 'linto-fleet-default')
+                const workflowsTemplates = await this.mongoRequest('workflows_templates', {})
+
+                if (workflowsTemplates.length > 0) { // collection exist and not empty
+                    const schemaValid = this.testSchema(workflowsTemplates, schemas.workflowsTemplates)
+
+                    if (schemaValid.valid) { // schema is valid
+                        const neededVal = workflowsTemplates.filter(ct => ct.name === 'static-clients-default-workflow')
                         if (neededVal.length === 0) { // required value doesn't exist
                             await this.mongoInsert('workflows_templates', WorkflowsTemplatesPayload)
                         }
@@ -89,10 +93,24 @@ class Migrate extends MongoMigration {
                         })
                     }
                 } else { //collection exist but empty
-                    await this.mongoInsert('workflows_templates', WorkflowsTemplatesPayload)
+                    if (staticTemplateValid.valid) {
+                        await this.mongoInsert('workflows_templates', WorkflowsTemplatesPayload)
+                    } else {
+                        migrationErrors.push({
+                            collectionName: 'workflows_templates',
+                            errors: staticTemplateValid.errors
+                        })
+                    }
                 }
             } else { // collection doesn't exist
-                await this.mongoInsert('workflows_templates', WorkflowsTemplatesPayload)
+                if (staticTemplateValid.valid) {
+                    await this.mongoInsert('workflows_templates', WorkflowsTemplatesPayload)
+                } else {
+                    migrationErrors.push({
+                        collectionName: 'workflows_templates',
+                        errors: staticTemplateValid.errors
+                    })
+                }
             }
 
             /*********/
@@ -154,7 +172,6 @@ class Migrate extends MongoMigration {
             /*************/
             if (collectionNames.indexOf('dbversion') >= 0) { // collection exist
                 const dbversion = await this.mongoRequest('dbversion', {})
-
                 const schemaValid = this.testSchema(dbversion, schemas.dbVersion)
                 if (schemaValid.valid) { // schema valid
                     await this.mongoUpdate('dbversion', { id: 'current_version' }, { version: this.version })
