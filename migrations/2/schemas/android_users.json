@@ -15,6 +15,9 @@
             },
             "applications": {
                 "type": "array"
+            },
+            "keyToken": {
+                "type": "string"
             }
         }
     },

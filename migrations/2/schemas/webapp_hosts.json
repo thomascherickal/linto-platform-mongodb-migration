@@ -21,17 +21,9 @@
                 }
             },
             "applications": {
-                "format": "object",
-                "properties":  {
-                    "flowId": {
-                        "type": "string"
-                    },
-                    "workflowId": {
-                        "type": "string"
-                    }
-                }
+                "type": "array"
             }
         }
     },
-    "required": ["originUrl", "requestToken", "slots", "applications"]
+    "required": ["originUrl", "requestToken", "maxSlots", "applications"]
 }
