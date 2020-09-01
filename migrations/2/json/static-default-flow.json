@@ -4,72 +4,50 @@
     "flow": [{
             "id": "2d78a86.a300558",
             "type": "tab",
-            "label": "linto-fleet-default",
-            "disabled": false
+            "label": "static-clients-default-workflow"
         },
         {
-            "id": "1c43e500-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882ab8a0-e388-11ea-9497-791673657824-mqtt",
             "type": "linto-config-mqtt",
             "z": "2d78a86.a300558",
             "host": "localhost",
             "port": "1883",
-            "scope": "blk"
+            "scope": "blk",
+            "login": "linto",
+            "password": "otnil"
         },
         {
-            "id": "1c43e501-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882ab8a0-e388-11ea-9497-791673657824-nlu",
             "type": "linto-config-evaluate",
             "z": "2d78a86.a300558",
-            "host": "https://stage.linto.ai/tockapi/rest/nlp/parse",
+            "host": "linto-tock-nlp-api:8880",
             "api": "tock",
-            "appname": "linto",
+            "appname": "piouet",
             "namespace": "app"
         },
         {
-            "id": "1c43e502-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882ab8a0-e388-11ea-9497-791673657824-stt",
             "type": "linto-config-transcribe",
             "z": "2d78a86.a300558",
-            "host": "https://stage.linto.ai/stt/fr",
-            "api": "linstt"
+            "host": "https://stage.linto.ai/stt-manager",
+            "api": "linstt",
+            "service": "stt_fr"
         },
         {
-            "id": "1c440c1b-6ac3-11ea-af80-ff4f9bc85132",
-            "type": "linto-config-mqtt",
-            "z": "2d78a86.a300558",
-            "host": "localhost",
-            "port": "1883",
-            "scope": "blk"
-        },
-        {
-            "id": "1c440c1c-6ac3-11ea-af80-ff4f9bc85132",
-            "type": "linto-config-evaluate",
-            "z": "2d78a86.a300558",
-            "host": "https://stage.linto.ai/tockapi/rest/nlp/parse",
-            "api": "tock",
-            "appname": "linto",
-            "namespace": "app"
-        },
-        {
-            "id": "1c440c1d-6ac3-11ea-af80-ff4f9bc85132",
-            "type": "linto-config-transcribe",
-            "z": "2d78a86.a300558",
-            "host": "https://stage.linto.ai/stt/fr",
-            "api": "linstt"
-        },
-        {
-            "id": "1c43e503-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882ab8a0-e388-11ea-9497-791673657824-config",
             "type": "linto-config",
             "z": "2d78a86.a300558",
             "name": "",
-            "configMqtt": "b4daef64.04ab9",
-            "configEvaluate": "eb19bca.3dd5e4",
-            "configTranscribe": "12977d52.e61213",
+            "configMqtt": "882ab8a0-e388-11ea-9497-791673657824-mqtt",
+            "configEvaluate": "882ab8a0-e388-11ea-9497-791673657824-nlu",
+            "configTranscribe": "882ab8a0-e388-11ea-9497-791673657824-stt",
             "language": "fr-FR",
             "x": 120,
             "y": 40,
             "wires": []
         },
         {
-            "id": "1c43e504-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfb0-e388-11ea-9497-791673657824",
             "type": "linto-red-event-emitter",
             "z": "2d78a86.a300558",
             "name": "",
@@ -78,7 +56,7 @@
             "wires": []
         },
         {
-            "id": "1c440c10-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfb1-e388-11ea-9497-791673657824",
             "type": "linto-evaluate",
             "z": "2d78a86.a300558",
             "name": "",
@@ -86,12 +64,12 @@
             "y": 100,
             "wires": [
                 [
-                    "1c43e504-6ac3-11ea-af80-ff4f9bc85132"
+                    "882adfb0-e388-11ea-9497-791673657824"
                 ]
             ]
         },
         {
-            "id": "1c440c11-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfb2-e388-11ea-9497-791673657824",
             "type": "linto-transcribe",
             "z": "2d78a86.a300558",
             "name": "",
@@ -99,26 +77,26 @@
             "y": 100,
             "wires": [
                 [
-                    "1c440c10-6ac3-11ea-af80-ff4f9bc85132"
+                    "882adfb1-e388-11ea-9497-791673657824"
                 ]
             ]
         },
         {
-            "id": "1c440c12-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfb4-e388-11ea-9497-791673657824",
             "type": "linto-terminal-in",
             "z": "2d78a86.a300558",
             "name": "",
-            "sn": "blk01",
+            "sn": "BLK002",
             "x": 140,
             "y": 100,
             "wires": [
                 [
-                    "1c440c11-6ac3-11ea-af80-ff4f9bc85132"
+                    "882adfb2-e388-11ea-9497-791673657824"
                 ]
             ]
         },
         {
-            "id": "1c440c13-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfb5-e388-11ea-9497-791673657824",
             "type": "linto-out",
             "z": "2d78a86.a300558",
             "name": "",
@@ -127,7 +105,7 @@
             "wires": []
         },
         {
-            "id": "1c440c14-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfb6-e388-11ea-9497-791673657824",
             "type": "linto-skill-weather",
             "z": "2d78a86.a300558",
             "name": "",
@@ -142,7 +120,7 @@
             ]
         },
         {
-            "id": "1c440c15-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfb8-e388-11ea-9497-791673657824",
             "type": "linto-model-dataset",
             "z": "2d78a86.a300558",
             "name": "",
@@ -151,19 +129,19 @@
             "wires": []
         },
         {
-            "id": "1c440c16-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfb9-e388-11ea-9497-791673657824",
             "type": "linto-skill-welcome",
             "z": "2d78a86.a300558",
             "name": "",
             "command": "##intent|goodbye|fr\n- hallo\n- salut\n- tchao\n- adieu\n- ciao\n- bye bye\n- au plaisir\n- à bientôt\n- a bientôt\n- a la prochaine\n- au revoir linto\n- au revoir\n- au plaisir linto\n- a bientôt linto\n- a bientôt\n- bye\n- a la revoyure\n- a plus\n##intent|goodbye|en\n- well thank\n- see you soon\n- farewell\n- goodbye\n- good bye \n- good bye linto\n- thank you \n- thank you linto\n- see ya\n- see you\n- good bye\n- bye\n- bye bye\n- goodbye LinTo\n- thank you LinTo\n- thanks\n##intent|greeting|fr\n- bonjour\n- coucou\n- donne moi ton nom\n- bonjour, comment tu t'appelles\n- comment tu t'appelles\n- yo\n- bonsoir\n- salut\n- salut linto\n- bienvenue\n- salutation\n- hey\n##intent|greeting|en\n- greeting\n- hiya\n- hey\n- good morning\n- good afternoon\n- good evening\n- howdy\n- hello\n- hi\n- what’s your name ?\n- what's your name\n##intent|howareyou|fr\n- bonjour linto comment vas-tu\n- comment ça va\n- comment vas tu\n- comment tu vas\n- ca roule ?\n- est ce que ça va\n- linto comment ça va\n- je me sens [bien](isok)\n- tout va [bien](isok)\n- tout va [bien](isok) merci\n- je vais [bien](isok)\n- je [vais bien](isok)\n- ca va [bien](isok)\n- [ca va](isok)\n- [ca va](isok) merci\n- ça va [bien](isok)\n- [ça va](isok)\n- [oui](isok)\n- [tranquille](isok)\n- je vais [pas très bien](isko)\n- ca va pas [très bien](isko)\n- je [vais pas bien](isko)\n- je me sens [pas bien](isko)\n- je ne me sens [pas bien](isko) aujourd'hui\n- [pas très](isko) en forme\n- je suis de [mauvaise](isko) humeur\n- ça [ne va pas](isko) trop\n##intent|howareyou|en\n- are you ok\n- are you okay\n- how are you doing\n- how are you\n- how are you doing ?\n- how are you?\n- how do you do\n- are you fine?\n- are you feeling good?\n- are you ok ?\n- howdy\n- everything is [good](isok)\n- i'm [happy](isok)\n- i'm feel [great](isok)\n- i'm [right](isok)\n- [well](isok) thanks\n- [ok](isok)\n- i am [fine](isok)\n- [fine](isok)\n- [good](isok) thanks\n- i'm [well](isok) thank you\n- i'm [fine](isok)\n- i'm [ok](isok)\n- i'm in a [good mood](isok)\n- everything is [alright](isok)\n- i feel [good](isok)\n- i'm [not well](isko) thank you\n- i'm [not fine](isko)\n- i'm [not ok](isko)\n- i feel [no good](isko)\n- i'm [not feeling good](isko) today\n- [not good](isko)\n- i'm in a [bad mood](isko)\n- [not fine](isko)\n- [not ok](isko)\n- [not good](isko) thanks\n- [not well](isko) thanks\n- i am [sad](isko)",
-            "x": 140,
-            "y": 220,
+            "x": 150,
+            "y": 320,
             "wires": [
                 []
             ]
         },
         {
-            "id": "1c440c17-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfba-e388-11ea-9497-791673657824",
             "type": "linto-ui",
             "z": "2d78a86.a300558",
             "name": "",
@@ -175,7 +153,7 @@
             "wires": []
         },
         {
-            "id": "1c440c18-6ac3-11ea-af80-ff4f9bc85132",
+            "id": "882adfbb-e388-11ea-9497-791673657824",
             "type": "to-linto-ui",
             "z": "2d78a86.a300558",
             "name": "",
@@ -183,33 +161,36 @@
             "y": 60,
             "wires": [
                 [
-                    "1c440c17-6ac3-11ea-af80-ff4f9bc85132"
+                    "882adfba-e388-11ea-9497-791673657824"
                 ]
             ]
         },
         {
-            "id": "b4daef64.04ab9",
+            "id": "882ab8a0-e388-11ea-9497-791673657824-mqtt",
             "type": "linto-config-mqtt",
             "z": "2d78a86.a300558",
             "host": "localhost",
             "port": "1883",
-            "scope": "blk"
+            "scope": "blk",
+            "login": "linto",
+            "password": "otnil"
         },
         {
-            "id": "eb19bca.3dd5e4",
+            "id": "882ab8a0-e388-11ea-9497-791673657824-nlu",
             "type": "linto-config-evaluate",
             "z": "2d78a86.a300558",
-            "host": "https://stage.linto.ai/tockapi/rest/nlp/parse",
+            "host": "linto-tock-nlp-api:8880",
             "api": "tock",
-            "appname": "linto",
+            "appname": "piouet",
             "namespace": "app"
         },
         {
-            "id": "12977d52.e61213",
+            "id": "882ab8a0-e388-11ea-9497-791673657824-stt",
             "type": "linto-config-transcribe",
             "z": "2d78a86.a300558",
-            "host": "https://stage.linto.ai/stt/fr",
-            "api": "linstt"
+            "host": "https://stage.linto.ai/stt-manager",
+            "api": "linstt",
+            "service": "stt_fr"
         }
     ],
     "created_date": "2020-07-30T10:43:49+02:00"

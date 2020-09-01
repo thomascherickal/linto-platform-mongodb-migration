@@ -71,20 +71,31 @@ class Migrate extends MongoMigration {
             /***********************/
             /* WORKFLOWS_TEMAPLTES */
             /***********************/
-            const WorkflowsTemplatesPayload = require('./json/linto-static-default-flow.json')
-            const staticTemplateValid = this.testSchema(WorkflowsTemplatesPayload, schemas.workflowsTemplates)
+
+            const staticWorkflowTemplate = require('./json/static-default-flow.json')
+            const applicationWorkflowTemplate = require('./json/application-default-flow.json')
+
+            const staticTemplateValid = this.testSchema([staticWorkflowTemplate], schemas.workflowsTemplates)
+            const applicationTemplateValid = this.testSchema([applicationWorkflowTemplate], schemas.workflowsTemplates)
 
             if (collectionNames.indexOf('workflows_templates') >= 0) { // collection exist
                 const workflowsTemplates = await this.mongoRequest('workflows_templates', {})
 
                 if (workflowsTemplates.length > 0) { // collection exist and not empty
                     const schemaValid = this.testSchema(workflowsTemplates, schemas.workflowsTemplates)
-
                     if (schemaValid.valid) { // schema is valid
-                        const neededVal = workflowsTemplates.filter(ct => ct.name === 'static-clients-default-workflow')
-                        if (neededVal.length === 0) { // required value doesn't exist
-                            await this.mongoInsert('workflows_templates', WorkflowsTemplatesPayload)
+                        const neededValStatic = workflowsTemplates.filter(ct => ct.name === 'static-clients-default-workflow')
+                        const needValApplication = workflowsTemplates.filter(ct => ct.name === 'application-default-workflow')
+
+                        // Insert Static template and application template if they don't exist
+                        if (neededValStatic.length === 0) { // required value doesn't exist
+                            await this.mongoInsert('workflows_templates', staticWorkflowTemplate)
                         }
+                        if (needValApplication.length === 0) { // required value doesn't exist
+                            await this.mongoInsert('workflows_templates', applicationWorkflowTemplate)
+                        }
+
+
                     } else { // schema is invalid
                         // Add errors to migrationErrors array
                         migrationErrors.push({
@@ -94,17 +105,26 @@ class Migrate extends MongoMigration {
                     }
                 } else { //collection exist but empty
                     if (staticTemplateValid.valid) {
-                        await this.mongoInsert('workflows_templates', WorkflowsTemplatesPayload)
+                        await this.mongoInsert('workflows_templates', staticWorkflowTemplate)
                     } else {
                         migrationErrors.push({
                             collectionName: 'workflows_templates',
                             errors: staticTemplateValid.errors
                         })
                     }
+
+                    if (applicationTemplateValid.valid) {
+                        await this.mongoInsert('workflows_templates', applicationWorkflowTemplate)
+                    } else {
+                        migrationErrors.push({
+                            collectionName: 'workflows_templates',
+                            errors: applicationWorkflowTemplate.errors
+                        })
+                    }
                 }
             } else { // collection doesn't exist
                 if (staticTemplateValid.valid) {
-                    await this.mongoInsert('workflows_templates', WorkflowsTemplatesPayload)
+                    await this.mongoInsert('workflows_templates', staticWorkflowTemplate)
                 } else {
                     migrationErrors.push({
                         collectionName: 'workflows_templates',
