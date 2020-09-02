@@ -8,22 +8,30 @@
                 "type": "string",
                 "format": "uri"
             },
-            "requestToken": {
-                "type": "string"
-            },
-            "maxSlots": {
-                "type": "integer"
-            },
-            "slots": {
+            "applications": {
                 "type": "array",
                 "items": {
-                    "type": "object"
+                    "type": "object",
+                    "properties": {
+                        "applicationId": {
+                            "type": "string"
+                        },
+                        "requestToken": {
+                            "type": "string"
+                        },
+                        "slots": {
+                            "type": "array",
+                            "items": {
+                                "type": "object"
+                            }
+                        },
+                        "maxSlots": {
+                            "type": "integer"
+                        }
+                    }
                 }
-            },
-            "applications": {
-                "type": "array"
             }
-        }
-    },
-    "required": ["originUrl", "requestToken", "maxSlots", "applications"]
+        },
+        "required": ["originUrl", "applications"]
+    }
 }
