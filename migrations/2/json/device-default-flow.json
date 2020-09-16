@@ -1,6 +1,6 @@
 {
-    "name": "application-default-workflow",
-    "type": "application",
+    "name": "device-default-workflow",
+    "type": "static",
     "flow": [{
             "id": "2d78a86.a300558",
             "type": "tab",
@@ -13,23 +13,23 @@
             "host": "localhost",
             "port": "1883",
             "scope": "blk",
-            "login": "linto",
-            "password": "otnil"
+            "login": "login",
+            "password": "password"
         },
         {
             "id": "882ab8a0-e388-11ea-9497-791673657824-nlu",
             "type": "linto-config-evaluate",
             "z": "2d78a86.a300558",
-            "host": "linto-tock-nlp-api:8880",
+            "host": "host",
             "api": "tock",
-            "appname": "piouet",
+            "appname": "appname",
             "namespace": "app"
         },
         {
             "id": "882ab8a0-e388-11ea-9497-791673657824-stt",
             "type": "linto-config-transcribe",
             "z": "2d78a86.a300558",
-            "host": "https://stage.linto.ai/stt-manager",
+            "host": "host",
             "api": "linstt",
             "service": "stt_fr"
         },
@@ -153,11 +153,9 @@
         },
         {
             "id": "c29c507b.a5a32",
-            "type": "linto-application-in",
+            "type": "linto-terminal-in",
             "z": "2d78a86.a300558",
             "name": "",
-            "auth_android": false,
-            "auth_web": false,
             "x": 110,
             "y": 100,
             "wires": [
@@ -167,31 +165,13 @@
             ]
         },
         {
-            "id": "882ab8a0-e388-11ea-9497-791673657824-mqtt",
-            "type": "linto-config-mqtt",
+            "id": "e74ab5e7.0c7db8",
+            "type": "linto-on-connect",
             "z": "2d78a86.a300558",
-            "host": "localhost",
-            "port": "1883",
-            "scope": "blk",
-            "login": "linto",
-            "password": "otnil"
-        },
-        {
-            "id": "882ab8a0-e388-11ea-9497-791673657824-nlu",
-            "type": "linto-config-evaluate",
-            "z": "2d78a86.a300558",
-            "host": "linto-tock-nlp-api:8880",
-            "api": "tock",
-            "appname": "piouet",
-            "namespace": "app"
-        },
-        {
-            "id": "882ab8a0-e388-11ea-9497-791673657824-stt",
-            "type": "linto-config-transcribe",
-            "z": "2d78a86.a300558",
-            "host": "https://stage.linto.ai/stt-manager",
-            "api": "linstt",
-            "service": "stt_fr"
+            "name": "",
+            "x": 300,
+            "y": 40,
+            "wires": []
         }
     ],
     "created_date": "2020-07-30T10:43:49+02:00"

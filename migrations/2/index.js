@@ -72,11 +72,11 @@ class Migrate extends MongoMigration {
             /* WORKFLOWS_TEMAPLTES */
             /***********************/
 
-            const staticWorkflowTemplate = require('./json/static-default-flow.json')
-            const applicationWorkflowTemplate = require('./json/application-default-flow.json')
+            const DeviceWorkflowTemplateValid = require('./json/device-default-flow.json')
+            const MultiUserWorkflowTemplate = require('./json/multi-user-default-flow.json')
 
-            const staticTemplateValid = this.testSchema([staticWorkflowTemplate], schemas.workflowsTemplates)
-            const applicationTemplateValid = this.testSchema([applicationWorkflowTemplate], schemas.workflowsTemplates)
+            const DeviceWorkflowTemplateValidValid = this.testSchema([DeviceWorkflowTemplateValid], schemas.workflowsTemplates)
+            const MultiUserWorkflowTemplateValid = this.testSchema([MultiUserWorkflowTemplate], schemas.workflowsTemplates)
 
             if (collectionNames.indexOf('workflows_templates') >= 0) { // collection exist
                 const workflowsTemplates = await this.mongoRequest('workflows_templates', {})
@@ -84,19 +84,19 @@ class Migrate extends MongoMigration {
                 if (workflowsTemplates.length > 0) { // collection exist and not empty
                     const schemaValid = this.testSchema(workflowsTemplates, schemas.workflowsTemplates)
                     if (schemaValid.valid) { // schema is valid
-                        const neededValStatic = workflowsTemplates.filter(ct => ct.name === 'static-clients-default-workflow')
-                        const needValApplication = workflowsTemplates.filter(ct => ct.name === 'application-default-workflow')
+                        const neededValStatic = workflowsTemplates.filter(ct => ct.name === 'device-default-workflow')
+                        const needValApplication = workflowsTemplates.filter(ct => ct.name === 'multi-user-default-workflow')
 
                         // Insert Static template and application template if they don't exist
                         if (neededValStatic.length === 0) { // required value doesn't exist
-                            await this.mongoInsert('workflows_templates', staticWorkflowTemplate)
+                            await this.mongoInsert('workflows_templates', DeviceWorkflowTemplateValid)
                         }
                         if (needValApplication.length === 0) { // required value doesn't exist
-                            await this.mongoInsert('workflows_templates', applicationWorkflowTemplate)
+                            await this.mongoInsert('workflows_templates', MultiUserWorkflowTemplate)
                         }
 
 
-                    } else { // schema is invalid
+                    } else { // schema is invalid 
                         // Add errors to migrationErrors array
                         migrationErrors.push({
                             collectionName: 'workflows_templates',
@@ -104,31 +104,31 @@ class Migrate extends MongoMigration {
                         })
                     }
                 } else { //collection exist but empty
-                    if (staticTemplateValid.valid) {
-                        await this.mongoInsert('workflows_templates', staticWorkflowTemplate)
+                    if (DeviceWorkflowTemplateValidValid.valid) {
+                        await this.mongoInsert('workflows_templates', DeviceWorkflowTemplateValid)
                     } else {
                         migrationErrors.push({
                             collectionName: 'workflows_templates',
-                            errors: staticTemplateValid.errors
+                            errors: DeviceWorkflowTemplateValidValid.errors
                         })
                     }
 
-                    if (applicationTemplateValid.valid) {
-                        await this.mongoInsert('workflows_templates', applicationWorkflowTemplate)
+                    if (MultiUserWorkflowTemplateValid.valid) {
+                        await this.mongoInsert('workflows_templates', MultiUserWorkflowTemplate)
                     } else {
                         migrationErrors.push({
                             collectionName: 'workflows_templates',
-                            errors: applicationWorkflowTemplate.errors
+                            errors: MultiUserWorkflowTemplate.errors
                         })
                     }
                 }
             } else { // collection doesn't exist
-                if (staticTemplateValid.valid) {
-                    await this.mongoInsert('workflows_templates', staticWorkflowTemplate)
+                if (DeviceWorkflowTemplateValidValid.valid) {
+                    await this.mongoInsert('workflows_templates', DeviceWorkflowTemplateValid)
                 } else {
                     migrationErrors.push({
                         collectionName: 'workflows_templates',
-                        errors: staticTemplateValid.errors
+                        errors: DeviceWorkflowTemplateValidValid.errors
                     })
                 }
             }
