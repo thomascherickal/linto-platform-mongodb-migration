@@ -91,6 +91,7 @@ class Migrate extends MongoMigration {
                         if (neededValStatic.length === 0) { // required value doesn't exist
                             await this.mongoInsert('workflows_templates', DeviceWorkflowTemplateValid)
                         }
+
                         if (needValApplication.length === 0) { // required value doesn't exist
                             await this.mongoInsert('workflows_templates', MultiUserWorkflowTemplate)
                         }
@@ -125,6 +126,7 @@ class Migrate extends MongoMigration {
             } else { // collection doesn't exist
                 if (DeviceWorkflowTemplateValidValid.valid) {
                     await this.mongoInsert('workflows_templates', DeviceWorkflowTemplateValid)
+                    await this.mongoInsert('workflows_templates', MultiUserWorkflowTemplate)
                 } else {
                     migrationErrors.push({
                         collectionName: 'workflows_templates',
