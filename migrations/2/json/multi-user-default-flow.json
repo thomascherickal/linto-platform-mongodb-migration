@@ -31,7 +31,9 @@
             "z": "2d78a86.a300558",
             "host": "host",
             "api": "linstt",
-            "service": "stt_fr"
+            "commandOffline": "commandOffline",
+            "largeVocabStreaming": "largeVocabStreaming",
+            "largeVocabOffline": "largeVocabOffline"
         },
         {
             "id": "882ab8a0-e388-11ea-9497-791673657824-config",
